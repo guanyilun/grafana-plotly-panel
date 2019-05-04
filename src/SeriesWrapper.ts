@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { fft } from './fft.ts'
 
 // This gives a standard way to get a value for a given field
 export abstract class SeriesWrapper {
@@ -39,10 +40,10 @@ export abstract class SeriesWrapper {
 }
 
 export class SeriesWrapperSeries extends SeriesWrapper {
-  value: 'value' | 'index' | 'time';
+  value: 'value' | 'index' | 'time' | 'freq' | 'fft';
 
   /** @ngInject */
-  constructor(refId: string, public series: any, val: 'value' | 'index' | 'time') {
+  constructor(refId: string, public series: any, val: 'value' | 'index' | 'time' | 'freq' | 'fft') {
     super(refId);
     this.value = val;
     this.count = series.datapoints.length;
@@ -71,6 +72,18 @@ export class SeriesWrapperSeries extends SeriesWrapper {
       this.name += '@time';
       return;
     }
+    if ('freq' === val) {
+      this.first = 0;
+      this.type = 'number';
+      this.name += '@freq';
+      return;
+    }
+    if ('fft' === val) {
+      this.first = 0;
+      this.type = 'number';
+      this.name += '@fft';
+      return;
+    }
   }
 
   toArray(): any[] {
@@ -81,10 +94,39 @@ export class SeriesWrapperSeries extends SeriesWrapper {
       }
       return arr;
     }
-    const idx = 'time' === this.value ? 1 : 0;
-    return _.map(this.series.datapoints, arr => {
-      return arr[idx];
-    });
+    if ('time' === this.value) {
+      return _.map(this.series.datapoints, arr => {
+        return arr[1];
+      });
+    }
+    if ('value' === this.value) {
+      return _.map(this.series.datapoints, arr => {
+        return arr[0];
+      });
+    }
+    if ('freq' === this.value) {
+      const arr = new Array(this.count);
+      const df = 1.0 / (this.series.datapoints[1][1]-this.series.datapoints[0][1])/this.count
+      for (let i = 0; i < this.count; i++) {
+        arr[i] = i*df;
+      }
+      return arr;
+    }
+    if ('fft' === this.value) {
+      let real = _.map(this.series.datapoints, arr => {
+        return arr[0];
+      });
+      let complex = _.map(this.series.datapoints, arr => {
+        return 0;
+      });
+      fft(real, complex);
+      const arr = new Array(this.count);
+      for (let i=0; i<this.count; i++) {
+        arr[i] = Math.pow(real[i],2) + Math.pow(complex[i],2)
+      }
+      return arr;
+    }
+    return [];
   }
 
   getAllKeys(): string[] {

@@ -551,6 +551,8 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
           finfo.push(new SeriesWrapperSeries(refId, series, 'value'));
           finfo.push(new SeriesWrapperSeries(refId, series, 'time'));
           finfo.push(new SeriesWrapperSeries(refId, series, 'index'));
+          finfo.push(new SeriesWrapperSeries(refId, series, 'freq'));
+          finfo.push(new SeriesWrapperSeries(refId, series, 'fft'));
         } else {
           console.error('Unsupported Series response', sidx, series);
         }
