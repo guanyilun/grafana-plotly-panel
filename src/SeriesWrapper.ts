@@ -106,19 +106,11 @@ export class SeriesWrapperSeries extends SeriesWrapper {
     }
     if ('freq' === this.value) {
       const arr = new Array(this.count);
-      const df = 1.0/(this.series.datapoints[1][1]-this.series.datapoints[0][1])/this.count/2.0
+      const df = 1000.0/(this.series.datapoints[1][1]-this.series.datapoints[0][1])/this.count/2.0
 
-      /* fftshift version */
       for (let i = 0; i < this.count; i++) {
-        const idx = (i+Math.floor(this.count/2))%this.count;
-        arr[idx] = (-Math.floor(this.count/2)+i)*df;
+        arr[i] = (-Math.floor(this.count/2)+i)*df;
       }
-
-      /* fft positive freq only version
-      for (let i = 0; i < this.count/2; i++) {
-        arr[i] = i*df
-      }*/
-
       return arr;
     }
     if ('fft' === this.value) {
@@ -131,16 +123,10 @@ export class SeriesWrapperSeries extends SeriesWrapper {
       fft(real, complex);
       const arr = new Array(this.count);
 
-      /* fftshift version */
       for (let i=0; i<this.count; i++) {
-        arr[i] = Math.pow(real[i],2) + Math.pow(complex[i],2)
+        const idx = (i+Math.floor(this.count/2))%this.count;
+        arr[idx] = Math.pow(real[i],2) + Math.pow(complex[i],2)
       }
-
-      /* fft positive freq only version
-      for (let i=0; i<this.count/2; i++) {
-        arr[i] = Math.pow(real[i],2) + Math.pow(complex[i],2)
-      }
-      */
       return arr;
     }
     return [];
