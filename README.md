@@ -6,8 +6,20 @@
 
 Render metrics using the plot.ly javascript framework
 
-Works with grafana 4, 5, and 6
+Works with grafana 4, 5, and 6.
 
+This is a forked version where I added in a functionaility to show the power spectrum
+of any given time series. For example,
+
+![Screenshot of scatter plot](https://raw.githubusercontent.com/NatelEnergy/grafana-plotly-panel/master/src/img/screenshot-fft.png)
+
+To install it, one can manually replace the existing plotly plugin at `/var/lib/grafana/plugins/`. It needs to be built first. This should work,
+```
+npm install
+npm run build
+```
+
+Below are the contents from the original repo.
 ### Screenshots
 
 ![Screenshot of scatter plot](https://raw.githubusercontent.com/NatelEnergy/grafana-plotly-panel/master/src/img/screenshot-scatter.png)
