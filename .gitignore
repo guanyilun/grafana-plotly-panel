@@ -3,5 +3,4 @@ node_modules/
 
 .tscache
 
-dist/
 dist-*/
