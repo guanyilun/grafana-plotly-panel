@@ -143,6 +143,33 @@ export class SeriesWrapperSeries extends SeriesWrapper {
     }
     return [this.name];
   }
+
+  getTimestamps(): any[] {
+    /* return the time stamp of the series */
+    const arr = new Array(this.count);
+    for (let i = 0; i < this.count; i++) {
+      arr[i] = i;
+    }
+    return arr;
+  }
+
+  resample(timestamps: any[]) int {
+    /* resample the datasets using the list of timestamps */
+    const timestampsOld = this.getTimestamps();
+    let j = 0;  // a counter on the old timestamps
+    const datapoints = new Array(timestamps.length);
+    for (let i=0; i<timestamps.length; i++) {
+      while ((timestamps[i] > timestampsOld[j]) && (j<timestampsOld.length-1)) {
+        if (timestamps[i] <= timestampsOld[j+1]) {
+          break;
+        } else {
+          j += 1;
+        }
+      }
+      datapoints[i] = [this.series.datapoints[j][1], timestamps[i]];
+    }
+    this.series.datapoints = datapoints
+  }
 }
 
 export class SeriesWrapperTableRow extends SeriesWrapper {

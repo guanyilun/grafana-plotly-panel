@@ -714,6 +714,18 @@ class PlotlyPanelCtrl extends MetricsPanelCtrl {
     let zero: any = [];
     this.traces.forEach(trace => {
       if (trace.__set) {
+        if (self.editor.trace.resample) { // if need to resample
+          console.log("Resampling...");
+          // resample using timestamps from x as reference
+          const refKey = trace.__set[0].key;
+          const refSeries = this.seriesByKey.get(refKey);
+          const refTimestamps = refSeries.getTimestamps();
+          for (let i = 1; i < trace.__set.length; i++) {
+            const k = trace.__set[i].key;
+            const s = this.seriesByKey.get(k);
+            s.resample(refTimestamps);
+          }
+        }
         trace.__set.forEach(v => {
           const s = this.seriesByKey.get(v.key);
           let vals: any[] = zero;

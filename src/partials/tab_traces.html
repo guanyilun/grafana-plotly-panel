@@ -47,6 +47,12 @@
             ng-blur="ctrl.onConfigChanged();"
           />
         </div>
+        <gf-form-switch 
+          class="gf-form" 
+          label="Show" 
+          label-class="gf-form-label width-7"
+          checked="ctrl.editor.trace.resample"
+          on-change="ctrl.onConfigChanged()"></gf-form-switch>
       </div>
 
       <h5 class="section-heading">Metrics</h5>
